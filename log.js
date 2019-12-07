@@ -35,6 +35,10 @@ function sumArray(array){
   return ret;
 }
 
+LogFile.prototype.Value = function(whatValue, whatSection) {
+    return this.values[whatValue][whatSection];
+};
+
 LogFile.prototype.SumAll = function(whatValue) {
     return sumArray(Object.values(this.values[whatValue]));
 };
@@ -61,6 +65,15 @@ Log = function(path, date) {
             this.worldUpdate.setText(fileText); 
     });
 }
+
+Log.prototype.SumAllAll = function(whatValue) {
+    return  0
+           + this.odePhysics.SumAll(whatValue)
+           + this.odeCollision.SumAll(whatValue)
+           + this.worldStep.SumAll(whatValue)
+           + this.worldUpdate.SumAll(whatValue);
+}
+
 
 LogsNew2Old = function(path) {
     const Day = str => str.trim().split('T')[0].split('-').join('');
