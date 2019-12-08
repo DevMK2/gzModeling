@@ -1,46 +1,73 @@
-const Log = require('./log');
+/* !!! FIXME !!!  Modify this path */
+diagPath = '/home/mk/.gazebo/diagnostics/';
 
-const PATH = '/home/mk/.gazebo/diagnostics/';
-//const PATH = '/home/mk/ws_study/gzModeling/diagnostics/';
-const logs = LogsNew2Old(PATH);
+(()=>{
+const Log = require('./log')
+    , fs = require('fs')
+    , process = require('process');
 
-//console.log(logs[0].date);
-//console.log(logs[0].worldUpdate.values);
-logs.forEach(log=> {
+if( process.argv.pop() === 'test' || !fs.existsSync(diagPath))
+  diagPath = './diagnostics/';
+
+main();
+
+function main() {
+  const logs = LogsNew2Old(diagPath);
+
+  printDiagnostics(logs);
+  saveCSV(logs);
+  saveCSVthe(logs, "World::Update");
+  saveCSVthe(logs, "World::Update::ContactManager::PublishContacts");
+  saveCSVthe(logs, "World::Update::LogRecordNotify");
+  saveCSVthe(logs, "World::Update::PhysicsEngine::UpdatePhysics");
+  saveCSVthe(logs, "World::Update::Events::beforePhysicsUpdate");
+  saveCSVthe(logs, "World::Update::PhysicsEngine::UpdateCollision");
+  saveCSVthe(logs, "World::Update::Model::Update");
+  saveCSVthe(logs, "World::Update::Events::worldUpdateBegin");
+  saveCSVthe(logs, "World::Update::needsReset");
+}
+
+function printDiagnostics(logs) {
+  logs.forEach(log=> {
     console.log('\n\n',log.date);
     console.log('maxAbs  : ', log.SumAllAll('maxAbs'));
     console.log('mean    : ', log.SumAllAll('mean'));
     console.log('min     : ', log.SumAllAll('min'));
     console.log('var     : ', log.SumAllAll('variate'));
-    console.log('--step est--');
+    console.log('-- step estimation --');
     console.log('maxAbs  : ', 1/log.SumAllAll('maxAbs'));
     console.log('mean    : ', 1/log.SumAllAll('mean'));
     console.log('min     : ', 1/log.SumAllAll('min'));
     console.log('var     : ', 1/log.SumAllAll('variate'));
-});
-saveCsv(logs);
+  });
+};
 
-//maxAbs mean min var, maxAbs mean min var
-
-
-function saveCsv(logs) {
-    /*   /iteration/   maxAbs,  mean,  min,   variate
-     *       0      odePhisics odeCollision worldStep worldUpdate
-     *       1
-     *       2
-     *       ...
-     */
-    let csvStr = "maxAbs,mean,min,var\n";
-    logs.reverse();
-    logs.forEach(log=> {
-        csvStr += 1/log.SumAllAll("maxAbs") + ',';
-
-        csvStr += 1/log.SumAllAll("mean") + ',';
-
-        csvStr += 1/log.SumAllAll("min") + ',';
-
-        csvStr += 1/log.SumAllAll("variate") + '\n';
-    });
-    fs = require('fs');
-    fs.writeFileSync('test.csv', csvStr, 'utf8');
+function saveCSV(logs) {
+  /*   /iteration/   maxAbs,  mean,  min,   variate
+   *       0      odePhisics odeCollision worldStep worldUpdate
+   *       1
+   *       ...
+   */
+  let csvStr = "maxAbs,mean,min,var\n";
+  logs.reverse();
+  logs.forEach(log=> {
+    csvStr += 1/log.SumAllAll("maxAbs") + ',';
+    csvStr += 1/log.SumAllAll("mean") + ',';
+    csvStr += 1/log.SumAllAll("min") + ',';
+    csvStr += 1/log.SumAllAll("variate") + '\n';
+  });
+  fs.writeFileSync('test.csv', csvStr, 'utf8');
 }
+
+function saveCSVthe(logs, section) {
+  let csvStr = "maxAbs,mean,min,var\n";
+  logs.reverse();
+  logs.forEach(log=> {
+    csvStr += 1/log.worldUpdate.Value("maxAbs", section) + ',';
+    csvStr += 1/log.worldUpdate.Value("mean", section) + ',';
+    csvStr += 1/log.worldUpdate.Value("min", section) + ',';
+    csvStr += 1/log.worldUpdate.Value("variate", section) + '\n';
+  });
+  fs.writeFileSync(section.trim().split('::').pop()+'.csv', csvStr, 'utf8');
+}
+})();
