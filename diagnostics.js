@@ -51,10 +51,10 @@ function saveCSV(logs) {
   let csvStr = "maxAbs,mean,min,var\n";
   logs.reverse();
   logs.forEach(log=> {
-    csvStr += 1/log.SumAllAll("maxAbs") + ',';
-    csvStr += 1/log.SumAllAll("mean") + ',';
-    csvStr += 1/log.SumAllAll("min") + ',';
-    csvStr += 1/log.SumAllAll("variate") + '\n';
+    csvStr += log.SumAllAll("maxAbs") + ',';
+    csvStr += log.SumAllAll("mean") + ',';
+    csvStr += log.SumAllAll("min") + ',';
+    csvStr += log.SumAllAll("variate") + '\n';
   });
   fs.writeFileSync('test.csv', csvStr, 'utf8');
 }
@@ -63,10 +63,12 @@ function saveCSVthe(logs, section) {
   let csvStr = "maxAbs,mean,min,var\n";
   logs.reverse();
   logs.forEach(log=> {
-    csvStr += 1/log.worldUpdate.Value("maxAbs", section) + ',';
-    csvStr += 1/log.worldUpdate.Value("mean", section) + ',';
-    csvStr += 1/log.worldUpdate.Value("min", section) + ',';
-    csvStr += 1/log.worldUpdate.Value("variate", section) + '\n';
+    if(log.worldUpdate.Value("maxAbs", section) === undefined)
+        return;
+    csvStr += log.worldUpdate.Value("maxAbs", section) + ',';
+    csvStr += log.worldUpdate.Value("mean", section) + ',';
+    csvStr += log.worldUpdate.Value("min", section) + ',';
+    csvStr += log.worldUpdate.Value("variate", section) + '\n';
   });
   fs.writeFileSync(section.trim().split('::').pop()+'.csv', csvStr, 'utf8');
 }
