@@ -1,38 +1,47 @@
+;'use strict';
+
 const process = require('process')
     , child_process = require('child_process');
 
-const pcsLaunch = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/');
-const iteration = 50;
-let errV = [];
+const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
+    , MAX_ITERATION = 50;
 
-process.env['GZMODELING_NUM_POCO'] = 0;
-startPCS();
+let failures = [];
+
 process.on('exit', code=>{
     console.log('exit code :',code);
-    console.log('error iterations :', errV);
+    console.log('failure iterations :', failures);
 });
+process.env['GZMODELING_NUM_POCO'] = 0;
+startPCS();
 
 
-function startPCS(){
-    let pcs = child_process.spawn('roslaunch', [pcsLaunch]/*options=[]*/);
+function startPCS() {
+    let pcs = child_process.spawn('roslaunch', [PCS_LAUNCH]);
+    let numPoco = Number(process.env['GZMODELING_NUM_POCO']);
+
+    console.log(`\niteration : ${numPoco}/${MAX_ITERATION}`);
+    console.log('loading ...');
 
     pcs.stderr.on('data', data=>{
-        if(String(data).search('process has died') !== -1)
-            errV.push(process.env['GZMODELING_NUM_POCO']);
+        if(String(data).search('process has died') === -1)
+            return;
+
+        failures.push(numPoco);
+        console.log('failure iterations :', failures);
     });
 
     pcs.on('exit', code=>{
         console.log('exit: '+code);
-        if(Number(process.env['GZMODELING_NUM_POCO']) === 1+iteration)
+        if(numPoco === MAX_ITERATION+1)
             return;
 
-        process.env['GZMODELING_NUM_POCO'] = Number(process.env['GZMODELING_NUM_POCO'])+1;
+        process.env['GZMODELING_NUM_POCO'] = numPoco+1;
         startPCS();
     });
 
     setTimeout(()=>{
-        console.log(pcs.pid);
+        console.log('killing ...');
         pcs.kill('SIGINT');
-    }, 60000);
+    }, 10000);
 }
-
