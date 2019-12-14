@@ -1,5 +1,7 @@
+'use strict';
+
 /* !!! FIXME !!!  Modify this path */
-diagPath = '/home/mk/.gazebo/diagnostics/';
+let diagPath = '/home/mk/.gazebo/diagnostics/';
 
 (()=>{
 const Log = require('./log')
@@ -12,19 +14,10 @@ if( process.argv.pop() === 'test' || !fs.existsSync(diagPath))
 main();
 
 function main() {
-  const logs = LogsNew2Old(diagPath);
+  const logs = Log.LogsNew2Old(diagPath);
 
-  printDiagnostics(logs);
+  //printDiagnostics(logs);
   saveCSV(logs);
-  saveCSVthe(logs, "World::Update");
-  saveCSVthe(logs, "World::Update::ContactManager::PublishContacts");
-  saveCSVthe(logs, "World::Update::LogRecordNotify");
-  saveCSVthe(logs, "World::Update::PhysicsEngine::UpdatePhysics");
-  saveCSVthe(logs, "World::Update::Events::beforePhysicsUpdate");
-  saveCSVthe(logs, "World::Update::PhysicsEngine::UpdateCollision");
-  saveCSVthe(logs, "World::Update::Model::Update");
-  saveCSVthe(logs, "World::Update::Events::worldUpdateBegin");
-  saveCSVthe(logs, "World::Update::needsReset");
 }
 
 function printDiagnostics(logs) {
@@ -43,33 +36,31 @@ function printDiagnostics(logs) {
 };
 
 function saveCSV(logs) {
-  /*   /iteration/   maxAbs,  mean,  min,   variate
+  /*   /iteration/   file,  section,  maxAbs, mean, min, variate 
    *       0      odePhisics odeCollision worldStep worldUpdate
    *       1
    *       ...
    */
-  let csvStr = "maxAbs,mean,min,var\n";
-  logs.reverse();
+  let csvStr = "iteration,file,section,type,value\n";
+  let iter= 0;
+
+  logs.reverse(); // for asscending to date
   logs.forEach(log=> {
-    csvStr += log.SumAllAll("maxAbs") + ',';
-    csvStr += log.SumAllAll("mean") + ',';
-    csvStr += log.SumAllAll("min") + ',';
-    csvStr += log.SumAllAll("variate") + '\n';
+
+      log.files.forEach(file=>{
+          file.values.forEach(value=>{
+              csvStr += `${String(iter)},`;
+              csvStr += `${file.filename},`;
+              csvStr += `${value.section},`;
+              csvStr += `${value.type},`;
+              csvStr += `${String(value.value)}\n`;
+          });
+      });
+
+      iter++;
   });
+  console.log(csvStr);
   fs.writeFileSync('test.csv', csvStr, 'utf8');
 }
 
-function saveCSVthe(logs, section) {
-  let csvStr = "maxAbs,mean,min,var\n";
-  logs.reverse();
-  logs.forEach(log=> {
-    if(log.worldUpdate.Value("maxAbs", section) === undefined)
-        return;
-    csvStr += log.worldUpdate.Value("maxAbs", section) + ',';
-    csvStr += log.worldUpdate.Value("mean", section) + ',';
-    csvStr += log.worldUpdate.Value("min", section) + ',';
-    csvStr += log.worldUpdate.Value("variate", section) + '\n';
-  });
-  fs.writeFileSync(section.trim().split('::').pop()+'.csv', csvStr, 'utf8');
-}
 })();

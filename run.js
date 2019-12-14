@@ -4,7 +4,7 @@ const process = require('process')
     , child_process = require('child_process');
 
 const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
-    , MAX_ITERATION = 50;
+    , MAX_ITERATION = 100;
 
 let failures = [];
 
@@ -43,5 +43,5 @@ function startPCS() {
     setTimeout(()=>{
         console.log('killing ...');
         pcs.kill('SIGINT');
-    }, 10000);
+    }, 60000);
 }

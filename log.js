@@ -1,11 +1,10 @@
+'use strict';
+
 const fs = require('fs');
-LogFile = function(){
-    this.values =  {
-        maxAbs: {},
-        mean: {},
-        min: {},
-        variate: {}
-    };
+var LogFile = function(filename, fileText){
+    this.filename = filename;
+    this.values = [];
+    this.setText(fileText);
 };
 
 LogFile.prototype.setText = function(text) {
@@ -17,15 +16,18 @@ LogFile.prototype.setText = function(text) {
 
     while(tokens.length !== 0)
     {
-        let id = tokens.pop();//ID
-        tokens.pop();//maxAbs
-        this.values.maxAbs[id] = tokens.pop();
-        tokens.pop();//mean
-        this.values.mean[id] = tokens.pop();
-        tokens.pop();//min
-        this.values.min[id] = tokens.pop();
-        tokens.pop();//variate
-        this.values.variate[id] = tokens.pop();
+        let section = tokens.pop().split('::').pop();
+
+        while(tokens.length !== 0){
+            let type = tokens.pop();//maxAbs, mean, min ... etc
+            if(type.search('::') !== -1) { // this is not a type but section
+                tokens.push(type);
+                break;
+            }
+
+            let value = {section: section, type: type, value: tokens.pop()};
+            this.values.push(value);
+        }
     }
 };
 
@@ -39,65 +41,44 @@ LogFile.prototype.Value = function(whatValue, whatSection) {
     return this.values[whatValue][whatSection];
 };
 
-LogFile.prototype.SumAll = function(whatValue) {
-    return sumArray(Object.values(this.values[whatValue]));
-};
-
-Log = function(path, date) {
-    let files = fs.readdirSync([path, date].join('/'));
+var Log = function(path, date) {
+    let fileNames = fs.readdirSync([path, date].join('/'));
 
     this.date = date;
-    this.odePhysics = new LogFile();
-    this.odeCollision = new LogFile();
-    this.worldStep = new LogFile();
-    this.worldUpdate = new LogFile();
+    this.files = [];
 
-    files.forEach(file=>{
-        let fileText = fs.readFileSync([path, date, file].join('/'), 'utf-8');
+    fileNames.forEach(file=>{
+        let a =file.lastIndexOf(':') + 1 , z = file.search('.log');
 
-        if(file.search('UpdateCollision.log') !== -1)
-            this.odeCollision.setText(fileText); 
-        else if(file.search('UpdatePhysics.log') !== -1)
-            this.odePhysics.setText(fileText); 
-        else if(file.search('Step.log') !== -1)
-            this.worldStep.setText(fileText); 
-        else if(file.search('Update.log') !== -1)
-            this.worldUpdate.setText(fileText); 
+        let fileName = file.substr(a, z-a)
+          , fileText = fs.readFileSync([path, date, file].join('/'), 'utf-8');
+
+        let logFile =  new LogFile(fileName, fileText);
+        this.files.push(logFile);
     });
 }
 
-Log.prototype.SumAllAll = function(whatValue) {
-    return  0
-           + this.odePhysics.SumAll(whatValue)
-           + this.odeCollision.SumAll(whatValue)
-           + this.worldStep.SumAll(whatValue)
-           + this.worldUpdate.SumAll(whatValue);
-}
 
-
-LogsNew2Old = function(path) {
+Log.LogsNew2Old = function(path) {
     const Day = str => str.trim().split('T')[0].split('-').join('');
     const Time = str => str.trim().split('T')[1].split(':').join('');
 
     let logs = fs.readdirSync(path);
     logs.sort((a, b)=>{
-        aDay = Day(a);
-        bDay = Day(b);
+        let aDay = Day(a)
+          , bDay = Day(b);
         if(aDay!==bDay)
             return bDay-aDay;
 
-        aTime = Time(a);
-        bTime = Time(b);
+        let aTime = Time(a)
+          , bTime = Time(b);
         return bTime-aTime;
     });
 
     let logObjs = [];
-    logs.forEach(log=>{
-        logObjs.push(new Log(path, log));
-    });
+    logs.forEach(log=> logObjs.push(new Log(path, log)));
 
     return logObjs;
 }
 
 module.exports = Log;
-module.exports = LogsNew2Old;
