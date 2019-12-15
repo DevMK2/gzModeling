@@ -25,6 +25,7 @@ startPCS();
 function startPCS() {
     let pcs = child_process.spawn('roslaunch', [PCS_LAUNCH]);
     let numPoco = Number(process.env['GZMODELING_NUM_POCO']);
+    let timeCoef = numPoco*3;
 
     console.log(`\niteration : ${numPoco}/${MAX_ITERATION}`);
     console.log('loading ...');
@@ -53,5 +54,5 @@ function startPCS() {
         console.log('killing ...');
         pcs.kill('SIGINT');
         killinterval = setInterval(()=>pcs.kill('SIGINT'),3000);
-    }, 60000);
+    }, 120000+timeCoef);
 }
