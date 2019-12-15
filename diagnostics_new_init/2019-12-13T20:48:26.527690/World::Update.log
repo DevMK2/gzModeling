@@ -1,0 +1,10 @@
+World::Update                                     maxAbs 2.049542e-02   mean   6.891422e-03   min    5.281400e-05   var    2.768819e-05   
+World::Update::ContactManager::PublishContacts    maxAbs 2.049458e-02   mean   6.890637e-03   min    5.231800e-05   var    2.768748e-05   
+World::Update::LogRecordNotify                    maxAbs 2.048344e-02   mean   6.883899e-03   min    4.876400e-05   var    2.767131e-05   
+World::Update::PhysicsEngine::UpdatePhysics       maxAbs 2.036787e-02   mean   6.794049e-03   min    3.932500e-05   var    2.752076e-05   
+World::Update::Events::beforePhysicsUpdate        maxAbs 1.786555e-03   mean   7.290634e-04   min    2.800500e-05   var    9.924266e-08   
+World::Update::PhysicsEngine::UpdateCollision     maxAbs 1.530804e-03   mean   7.019755e-04   min    2.641400e-05   var    1.016220e-07   
+World::Update::SetWorldPose(dirtyPoses)           maxAbs 2.048157e-02   mean   6.882531e-03   min    4.795800e-05   var    2.766905e-05   
+World::Update::Model::Update                      maxAbs 1.836560e-04   mean   8.775745e-05   min    6.330000e-06   var    4.927946e-10   
+World::Update::Events::worldUpdateBegin           maxAbs 8.766800e-05   mean   3.770291e-05   min    5.285000e-06   var    1.292927e-10   
+World::Update::needsReset                         maxAbs 4.611000e-06   mean   5.067519e-07   min    4.430000e-07   var    1.223057e-14   

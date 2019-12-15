@@ -4,12 +4,15 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-class DataIDX:
-    MAXABS = 0
-    MEAN = 1
-    MIN = 2
-    VARIATE = 3
-
+def autolabel(rects):
+    """Attach a text label above each bar in *rects*, displaying its height."""
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
 
 def getCSVFile():
     csvFile = 'test.csv'
@@ -31,10 +34,10 @@ def drawFourGraphs(_csv, _types, _axes, _filename):
         x = 0 if i<2 else 1
         y = i if i<2 else i-2
         graph = drawSeaborn(_csv, _type=type, _ax=_axes[x][y])
-        graph.set_title('value of '+type)
-        graph.set_xlabel('iteration(number of "POCO")')
-        graph.set_ylabel('value(sec)')
-    plt.suptitle('Diagnostics for '+ _filename)
+        graph.set_title(type+' time')
+        graph.set_xlabel('iteration(number of blocks)')
+        graph.set_ylabel('time(sec)')
+    plt.suptitle(_filename)
     plt.show()
 
 def drawSeabornValued(_fileDF, _ax, _type='mean'):
@@ -46,10 +49,10 @@ def drawValuedGraphs(_csv, _types, _axes, _title):
         x = 0 if i<2 else 1
         y = i if i<2 else i-2
         graph = drawSeabornValued(_csv, _type=type, _ax=_axes[x][y])
-        graph.set_title('value of '+type)
-        graph.set_xlabel('iteration(number of "POCO")')
+        graph.set_title(type)
+        graph.set_xlabel('iteration(number of block)')
         graph.set_ylabel('value(sec)')
-    plt.suptitle('Diagnostics for '+ _title +' values of all files')
+    plt.suptitle(_title +" execute time (sec)")
     plt.show()
 
 
@@ -86,7 +89,19 @@ def graph3(title, csv):
             stepMean = avg_csv[avg_csv.file==t][avg_csv.type==type]
             graph = sns.barplot(data=stepMean, x='type', y='value', hue='section', ax=axes[x][y])
             graph.set_title(t)
-        plt.suptitle(type)
+            graph.set_ylabel('time(sec)')
+            print('\n'+t)
+            for i,r in stepMean.iterrows():
+                print(r.file+" : " +r.section+" : "+str(r.value))
+
+            if t == "Step":
+                summ = 0
+                for i,r in stepMean.iterrows():
+                    if r.section != 'update' and r.section != 'Step':
+                        summ += r.value
+                print(summ);
+
+        plt.suptitle('Average '+type+' execute time(sec) per block')
         plt.show()
 
 
@@ -104,7 +119,7 @@ if __name__ == '__main__':
     # graph1(title, csv)
 
     # Draw graphs one, 4section per files, only mean value
-    graph2(csv)
+    # graph2(csv)
     
     # Draw graphs two, 4section per files, man, mean values avg per sections
-    #graph3(title, csv)
+    graph3(title, csv)

@@ -1,0 +1,6 @@
+World::Step                                       maxAbs 3.077462e+00   mean   1.084036e-02   min    7.528890e-04   var    1.819803e-03   
+World::Step::update                               maxAbs 2.931522e-02   mean   9.537101e-03   min    7.166280e-04   var    4.969138e-05   
+World::Step::sleepOffset                          maxAbs 7.946068e-03   mean   1.149284e-05   min    3.574000e-06   var    1.465278e-08   
+World::Step::publishWorldStats                    maxAbs 7.936916e-03   mean   6.298178e-06   min    1.512000e-06   var    1.182787e-08   
+World::Step::worldUpdateMutex                     maxAbs 7.949177e-03   mean   1.276895e-05   min    4.535000e-06   var    1.466558e-08   
+World::Step::loadPlugins                          maxAbs 7.900862e-03   mean   2.045638e-06   min    4.300000e-07   var    1.172771e-08   
