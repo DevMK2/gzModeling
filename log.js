@@ -58,6 +58,42 @@ var Log = function(path, date) {
     });
 }
 
+LogFile.prototype.calcAbsTime = function() {
+  //console.log(this.values);
+  let sections = getSections(this.values);
+
+  let that = this;
+
+
+  this.values.sort((a,b)=> {
+    if(a.section > b.section) 
+      return 1;
+    else if(a.section < b.section) 
+      return -1;
+    else
+      return Number(a.value)-Number(b.value)
+  });
+  console.log(this.values);
+
+
+  function getSections(values) {
+    let sections = []
+      , sectionMap = {};
+    values.forEach(value=>{
+      if(sectionMap[value.section] !== true) {
+        sections.push(value.section);
+        sectionMap[value.section] = true;
+      }
+    });
+    return sections;
+  }
+};
+
+Log.prototype.preprocessing = function() {
+  // 각 file에 기재된 사건이 실행된 절대 시간을 구한다.
+  this.files.forEach(file=>file.calcAbsTime());
+};
+
 
 Log.LogsNew2Old = function(path) {
     const Day = str => str.trim().split('T')[0].split('-').join('');
