@@ -3,8 +3,10 @@
 const process = require('process')
     , child_process = require('child_process');
 
-const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
-    , MAX_ITERATION = 100;
+//const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
+const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs.launch'].join('/')
+    , START_ITERATION = 1
+    , MAX_ITERATION = 10;
 
 let failures = [];
 
@@ -12,7 +14,7 @@ process.on('exit', code=>{
     console.log('exit code :',code);
     console.log('failure iterations :', failures);
 });
-process.env['GZMODELING_NUM_POCO'] = 0;
+process.env['GZMODELING_NUM_POCO'] = START_ITERATION;
 startPCS();
 
 
@@ -31,8 +33,11 @@ function startPCS() {
         console.log('failure iterations :', failures);
     });
 
+    let killinterval;
+
     pcs.on('exit', code=>{
         console.log('exit: '+code);
+        clearInterval(killinterval);
         if(numPoco === MAX_ITERATION+1)
             return;
 
@@ -43,5 +48,6 @@ function startPCS() {
     setTimeout(()=>{
         console.log('killing ...');
         pcs.kill('SIGINT');
+        killinterval = setInterval(()=>pcs.kill('SIGINT'),3000);
     }, 60000);
 }

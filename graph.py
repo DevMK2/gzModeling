@@ -64,15 +64,15 @@ if __name__ == '__main__':
              'Step']
 
     # Draw graphs per Files, 4section per section
-    #for filename in title:
-    #    fig, axes = plt.subplots(2, 2, figsize=(20, 20))
+    for filename in title:
+        fig, axes = plt.subplots(2, 2, figsize=(20, 20))
 
-    #    filedCsv = csv[csv.file == filename]
+        filedCsv = csv[csv.file == filename]
 
-    #    types = ['maxAbs', 'mean', 'min', 'var']
-    #    drawFourGraphs(filedCsv, types, axes)
+        types = ['maxAbs', 'mean', 'min', 'var']
+        drawFourGraphs(filedCsv, types, axes)
 
     # Draw graphs one, 4section per files, only mean value
-    meanValuedCsv = csv[csv.type == 'mean']
-    fig, axes = plt.subplots(2, 2, figsize=(20, 20))
-    drawValuedGraphs(meanValuedCsv, title, axes)
+    # meanValuedCsv = csv[csv.type == 'mean']
+    # fig, axes = plt.subplots(2, 2, figsize=(20, 20))
+    # drawValuedGraphs(meanValuedCsv, title, axes)
