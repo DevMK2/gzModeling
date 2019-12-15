@@ -3,10 +3,13 @@
 const process = require('process')
     , child_process = require('child_process');
 
-//const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
-const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs.launch'].join('/')
-    , START_ITERATION = 1
-    , MAX_ITERATION = 10;
+const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
+//const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs.launch'].join('/')
+    , START_ITERATION = 0
+    , MAX_ITERATION = 100
+    //, RUN_TYPE = "init";
+    //, RUN_TYPE = "active";
+    , RUN_TYPE = "release";
 
 let failures = [];
 
@@ -15,6 +18,7 @@ process.on('exit', code=>{
     console.log('failure iterations :', failures);
 });
 process.env['GZMODELING_NUM_POCO'] = START_ITERATION;
+process.env['GZMODELING_RUN_TYPE'] = RUN_TYPE;
 startPCS();
 
 
@@ -49,5 +53,5 @@ function startPCS() {
         console.log('killing ...');
         pcs.kill('SIGINT');
         killinterval = setInterval(()=>pcs.kill('SIGINT'),3000);
-    }, 60000);
+    }, 10000);
 }
