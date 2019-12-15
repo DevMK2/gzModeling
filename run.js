@@ -4,7 +4,7 @@ const process = require('process')
     , child_process = require('child_process');
 
 //const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
-const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs.launch'].join('/')
+const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
     , START_ITERATION = 0
     , MAX_ITERATION = 100
     //, RUN_TYPE = "init";

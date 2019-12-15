@@ -119,7 +119,7 @@ if __name__ == '__main__':
     # graph1(title, csv)
 
     # Draw graphs one, 4section per files, only mean value
-    # graph2(csv)
+    graph2(csv)
     
     # Draw graphs two, 4section per files, man, mean values avg per sections
-    graph3(title, csv)
+    # graph3(title, csv)
