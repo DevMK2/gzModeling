@@ -7,9 +7,9 @@ const process = require('process')
 const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs.launch'].join('/')
     , START_ITERATION = 0
     , MAX_ITERATION = 100
-    //, RUN_TYPE = "init";
+    , RUN_TYPE = "init";
     //, RUN_TYPE = "active";
-    , RUN_TYPE = "release";
+    //, RUN_TYPE = "release";
 
 let failures = [];
 
