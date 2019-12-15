@@ -3,8 +3,8 @@
 const process = require('process')
     , child_process = require('child_process');
 
-const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
-//const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs.launch'].join('/')
+//const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs_dev.launch'].join('/')
+const PCS_LAUNCH = [process.env['PCS_LAUNCH_PATH'], 'pcs.launch'].join('/')
     , START_ITERATION = 0
     , MAX_ITERATION = 100
     //, RUN_TYPE = "init";
@@ -53,5 +53,5 @@ function startPCS() {
         console.log('killing ...');
         pcs.kill('SIGINT');
         killinterval = setInterval(()=>pcs.kill('SIGINT'),3000);
-    }, 10000);
+    }, 60000);
 }

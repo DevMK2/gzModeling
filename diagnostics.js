@@ -8,32 +8,21 @@ const Log = require('./log')
     , fs = require('fs')
     , process = require('process');
 
-if( process.argv.pop() === 'test' || !fs.existsSync(diagPath))
-  diagPath = './diagnostics/';
+let diagFile = process.argv.pop();
+if(diagFile !== 'diagnostics.js' && fs.existsSync('./'+diagFile))
+  diagPath = './' + diagFile;
+else if(!fs.existsSync(diagPath)) {
+  console.log('need diagnostics directory');
+  process.exit(1);
+}
 
 main();
 
+
 function main() {
   const logs = Log.LogsNew2Old(diagPath);
-
-  //printDiagnostics(logs);
   saveCSV(logs);
 }
-
-function printDiagnostics(logs) {
-  logs.forEach(log=> {
-    console.log('\n\n',log.date);
-    console.log('maxAbs  : ', log.SumAllAll('maxAbs'));
-    console.log('mean    : ', log.SumAllAll('mean'));
-    console.log('min     : ', log.SumAllAll('min'));
-    console.log('var     : ', log.SumAllAll('variate'));
-    console.log('-- step estimation --');
-    console.log('maxAbs  : ', 1/log.SumAllAll('maxAbs'));
-    console.log('mean    : ', 1/log.SumAllAll('mean'));
-    console.log('min     : ', 1/log.SumAllAll('min'));
-    console.log('var     : ', 1/log.SumAllAll('variate'));
-  });
-};
 
 function saveCSV(logs) {
   /*   /iteration/   file,  section,  maxAbs, mean, min, variate 
@@ -46,7 +35,7 @@ function saveCSV(logs) {
 
   logs.reverse(); // for asscending to date
   logs.forEach(log=> {
-
+      log.preprocessing();
       log.files.forEach(file=>{
           file.values.forEach(value=>{
               csvStr += `${String(iter)},`;
@@ -59,7 +48,7 @@ function saveCSV(logs) {
 
       iter++;
   });
-  console.log(csvStr);
+  //console.log(csvStr);
   fs.writeFileSync('test.csv', csvStr, 'utf8');
 }
 

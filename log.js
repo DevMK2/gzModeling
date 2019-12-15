@@ -59,23 +59,21 @@ var Log = function(path, date) {
 }
 
 LogFile.prototype.calcAbsTime = function() {
-  //console.log(this.values);
-  let sections = getSections(this.values);
-
-  let that = this;
-
-
   this.values.sort((a,b)=> {
-    if(a.section > b.section) 
-      return 1;
-    else if(a.section < b.section) 
-      return -1;
+    if(a.type > b.type)
+        return -1;
+    else if(a.type < b.type)
+        return 1;
     else
       return Number(a.value)-Number(b.value)
   });
-  console.log(this.values);
 
+  for(let i=this.values.length-1; i!=0; --i) {
+      if(this.values[i].type === this.values[i-1].type)
+          this.values[i].value = Number(this.values[i].value) - Number(this.values[i-1].value);
+  }
 
+  let sections = getSections(this.values);
   function getSections(values) {
     let sections = []
       , sectionMap = {};
@@ -112,7 +110,11 @@ Log.LogsNew2Old = function(path) {
     });
 
     let logObjs = [];
-    logs.forEach(log=> logObjs.push(new Log(path, log)));
+    logs.forEach(log=> {
+        let _l = new Log(path, log);
+        if(_l.files[0].values.length !== 0)
+            logObjs.push(_l);
+    });
 
     return logObjs;
 }

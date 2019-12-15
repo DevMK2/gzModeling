@@ -13,22 +13,32 @@ function testPreprocessing() {
   testLog.files[0].values.filter(item=>item.type==='maxAbs').forEach(abs=>{
     abss.push(abs.value);
   });
-  console.log(abss);
   abss.sort();
-  console.log(abss);
   let result = [abss[0]];
   for(let i=1; i!=abss.length; ++i) {
     result.push(abss[i] - abss[i-1]);
   }
-  console.log(result.sort());
 
   testLog.preprocessing(); 
   abss = [];
   testLog.files[0].values.filter(item=>item.type==='maxAbs').forEach(abs=>abss.push(abs.value));
-  console.log(abss.sort() === result.sort())
 
-  console.log(abss.sort());
-  console.log(result.sort());
+  if(AssertArray(abss.sort(),result.sort()))
+      console.log('calcAbsTime done');
+  else {
+      console.log(abss.sort());
+      console.log(result.sort());
+  }
+}
+
+function AssertArray(a, b) {
+    if(a.length !== b.length)
+        return false;
+
+    for(let i=a.length-1; i>=0; --i)
+        if(a[i] !== b[i]) return false;
+
+    return true;
 }
 
 

@@ -41,7 +41,7 @@ def drawSeabornValued(_fileDF, _ax, _type='mean'):
     typedValues = _fileDF[_fileDF.file == _type]
     return sns.lineplot(data=typedValues, x='iteration', y='value', hue='section', ax=_ax)
 
-def drawValuedGraphs(_csv, _types, _axes):
+def drawValuedGraphs(_csv, _types, _axes, _title):
     for i, type in enumerate(_types):
         x = 0 if i<2 else 1
         y = i if i<2 else i-2
@@ -49,7 +49,7 @@ def drawValuedGraphs(_csv, _types, _axes):
         graph.set_title('value of '+type)
         graph.set_xlabel('iteration(number of "POCO")')
         graph.set_ylabel('value(sec)')
-    plt.suptitle('Diagnostics for mean values of all files')
+    plt.suptitle('Diagnostics for '+ _title +' values of all files')
     plt.show()
 
 
@@ -64,15 +64,22 @@ if __name__ == '__main__':
              'Step']
 
     # Draw graphs per Files, 4section per section
-    for filename in title:
-        fig, axes = plt.subplots(2, 2, figsize=(20, 20))
+    # for filename in title:
+    #     fig, axes = plt.subplots(2, 2, figsize=(20, 20))
 
-        filedCsv = csv[csv.file == filename]
+    #     filedCsv = csv[csv.file == filename]
 
-        types = ['maxAbs', 'mean', 'min', 'var']
-        drawFourGraphs(filedCsv, types, axes)
+    #     types = ['maxAbs', 'mean', 'min', 'var']
+    #     drawFourGraphs(filedCsv, types, axes)
 
     # Draw graphs one, 4section per files, only mean value
     # meanValuedCsv = csv[csv.type == 'mean']
     # fig, axes = plt.subplots(2, 2, figsize=(20, 20))
-    # drawValuedGraphs(meanValuedCsv, title, axes)
+    # drawValuedGraphs(meanValuedCsv, title, axes, 'mean')
+
+    # meanValuedCsv = csv[csv.type == 'maxAbs']
+    # fig, axes = plt.subplots(2, 2, figsize=(20, 20))
+    # drawValuedGraphs(meanValuedCsv, title, axes, 'maxAbs')
+    
+    print(csv.file.values)
+    print(csv[csv.type=='mean'])

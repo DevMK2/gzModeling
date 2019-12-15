@@ -1,0 +1,4 @@
+ODEPhysics::UpdateCollision                       maxAbs 3.219485e-03   mean   1.324430e-03   min    1.773700e-05   var    3.505287e-08   
+ODEPhysics::UpdateCollision::collideTrimeshes     maxAbs 3.218519e-03   mean   1.323714e-03   min    1.731300e-05   var    3.504159e-08   
+ODEPhysics::UpdateCollision::collideShapes        maxAbs 3.216396e-03   mean   1.322249e-03   min    1.645300e-05   var    3.500575e-08   
+ODEPhysics::UpdateCollision::dSpaceCollide        maxAbs 9.115580e-04   mean   5.956409e-04   min    1.557300e-05   var    4.354101e-09   
