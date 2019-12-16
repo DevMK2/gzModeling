@@ -6,18 +6,17 @@
 chan addBlock;</declaration>
 	<template>
 		<name x="5" y="5">MainLoop</name>
-		<declaration>// Place local declarations here.
-
-const int loadStepTask = 348
+		<declaration>
+const int stepSize = 25000
   , loadUpdatePhysics = 840
   , loadUpdateCollision = 61
   , loadBPU = 1613
+  , loadStepTask = 348
   , MaxNumBlocks = 8;
 
 int numBlocks = 1;
 
-int stepSize = 25000
-  , timeStepTask = loadStepTask
+int timeStepTask = loadStepTask
   , timeUpdatePhysics = loadUpdatePhysics
   , timeUpdateCollision = loadUpdateCollision
   , timeBPU = loadBPU;
@@ -140,24 +139,14 @@ step:=0</label>
 	</template>
 	<system>// Place template instantiations here.
 // List one or more processes to be composed into a system.
-system MainLoop, Plugin, User;
+system MainLoop,  User;
     </system>
 	<queries>
 		<query>
-			<formula></formula>
-			<comment></comment>
-		</query>
-		<query>
-			<formula></formula>
-			<comment></comment>
-		</query>
-		<query>
-			<formula>MainLoop.MaxNumBlock=9</formula>
-			<comment></comment>
-		</query>
-		<query>
-			<formula>A[] not deadlock</formula>
-			<comment></comment>
+			<formula>A[] not deadlock
+			</formula>
+			<comment>
+			</comment>
 		</query>
 	</queries>
 </nta>
